@@ -3,10 +3,17 @@ defmodule JswatchWeb.ClockManager do
 
   def init(ui) do
     :gproc.reg({:p, :l, :ui_event})
+    # get time
     {_, now} = :calendar.local_time()
     time = Time.from_erl!(now)
+
+    # create time value for when alarm should sound
     alarm = Time.add(time, 10)
+
+    # send out to woring_working
     Process.send_after(self(), :working_working, 1000)
+
+    # return state
     {:ok, %{ui_pid: ui, time: time, alarm: alarm, st: Working}}
   end
 
@@ -14,6 +21,8 @@ defmodule JswatchWeb.ClockManager do
     {_, now} = :calendar.local_time()
     time = Time.from_erl!(now)
     alarm = Time.add(time, 5)
+
+    # legit sends a process out to add five seconds to the alarm
     {:noreply, %{state | alarm: alarm}}
   end
 
